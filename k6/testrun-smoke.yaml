@@ -1,0 +1,20 @@
+apiVersion: k6.io/v1alpha1
+kind: TestRun
+metadata:
+  name: shop-smoke-test
+  namespace: shop-demo
+spec:
+  parallelism: 1
+  script:
+    configMap:
+      name: k6-shop-scripts
+      file: smoke-test.js
+  arguments: "-o experimental-prometheus-rw"
+  runner:
+    env:
+      - name: K6_PROMETHEUS_RW_SERVER_URL
+        value: http://kube-prometheus-kube-prome-prometheus.monitoring.svc.cluster.local:9090/api/v1/write
+      - name: K6_PROMETHEUS_RW_TREND_STATS
+        value: "p(95),p(99),avg"
+      - name: BASE_URL
+        value: http://api.shop-demo.svc.cluster.local:8000

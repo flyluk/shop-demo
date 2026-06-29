@@ -1,0 +1,20 @@
+apiVersion: k6.io/v1alpha1
+kind: TestRun
+metadata:
+  name: shop-login-cart
+  namespace: shop-demo
+spec:
+  parallelism: 2
+  script:
+    configMap:
+      name: k6-shop-scripts
+      file: login-cart-test.js
+  arguments: "-o experimental-prometheus-rw"
+  runner:
+    env:
+      - name: K6_PROMETHEUS_RW_SERVER_URL
+        value: http://kube-prometheus-kube-prome-prometheus.monitoring.svc.cluster.local:9090/api/v1/write
+      - name: K6_PROMETHEUS_RW_TREND_STATS
+        value: "p(95),p(99),avg,min,max" # p(95) is the 95th percentile, p(99) is the 99th percentile, avg is the average, min is the minimum, max is the maximum
+      - name: BASE_URL
+        value: http://api.shop-demo.svc.cluster.local:8000

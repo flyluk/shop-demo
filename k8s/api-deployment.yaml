@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+  namespace: shop-demo
+  labels:
+    app: api
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: shop-demo-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: shop-demo-secrets
+                  key: DATABASE_URL
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: shop-demo-secrets
+                  key: JWT_SECRET
+            - name: JWT_EXPIRE_MINUTES
+              valueFrom:
+                configMapKeyRef:
+                  name: shop-demo-config
+                  key: JWT_EXPIRE_MINUTES
+            - name: UVICORN_WORKERS
+              valueFrom:
+                configMapKeyRef:
+                  name: shop-demo-config
+                  key: UVICORN_WORKERS
+            - name: DB_POOL_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: shop-demo-config
+                  key: DB_POOL_SIZE
+            - name: DB_MAX_OVERFLOW
+              valueFrom:
+                configMapKeyRef:
+                  name: shop-demo-config
+                  key: DB_MAX_OVERFLOW
+            - name: DB_POOL_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: shop-demo-config
+                  key: DB_POOL_TIMEOUT
+            - name: DB_POOL_RECYCLE
+              valueFrom:
+                configMapKeyRef:
+                  name: shop-demo-config
+                  key: DB_POOL_RECYCLE
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+  namespace: shop-demo
+  labels:
+    app: api
+spec:
+  selector:
+    app: api
+  ports:
+    - port: 8000
+      targetPort: 8000
