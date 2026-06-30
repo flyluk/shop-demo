@@ -34,8 +34,10 @@ monitoring namespace
 ## Features
 
 - User registration and JWT login
-- Product catalog (10 seeded items, stock 20000 for load tests)
+- Product catalog (10 seeded items with images, stock 20000 for load tests)
 - Shopping cart (add, update quantity, remove — delete restores stock)
+- Cart icon with item count in header
+- Checkout flow: shipping addresses, payment methods, place order
 - Health endpoint for probes and smoke tests
 - JWT-only auth on cart routes (no DB lookup per request)
 
@@ -156,6 +158,13 @@ cd /mnt/c/Users/flyluk/Projects/shopperf
 cd k6
 cp .env.example .env   # first time only
 ./run.sh --test-id my-run-1
+
+# Checkout scenario
+K6_SCENARIO=checkout ./run.sh --test-id checkout-1
+
+# Two scenarios in parallel (separate terminals)
+K6_SCENARIO=browse_and_cart SHOP_K6_VUS=15 TEST_RUN_ID=mix ./run.sh
+K6_SCENARIO=checkout SHOP_K6_VUS=5 TEST_RUN_ID=mix ./run.sh
 ```
 
 Recommended `k6/.env` settings:
@@ -215,6 +224,16 @@ Tuned for 20–50 VUs, add+delete cart flow. Full details in APP-TUNING.md.
 | POST | `/api/cart/items` | Yes | Add to cart |
 | PATCH | `/api/cart/items/{id}` | Yes | Update quantity |
 | DELETE | `/api/cart/items/{id}` | Yes | Remove item (restores stock) |
+| GET | `/api/addresses` | Yes | List shipping addresses |
+| POST | `/api/addresses` | Yes | Create address |
+| PUT | `/api/addresses/{id}` | Yes | Update address |
+| DELETE | `/api/addresses/{id}` | Yes | Delete address |
+| GET | `/api/payment-methods` | Yes | List payment methods |
+| POST | `/api/payment-methods` | Yes | Add payment method |
+| DELETE | `/api/payment-methods/{id}` | Yes | Delete payment method |
+| POST | `/api/checkout` | Yes | Place order (cart → order) |
+| GET | `/api/orders` | Yes | List orders |
+| GET | `/api/orders/{id}` | Yes | Order detail |
 
 ---
 
@@ -243,8 +262,9 @@ cd scripts
 
 ```
 shop-demo/
-├── backend/                    FastAPI (auth, products, cart)
+├── backend/                    FastAPI (auth, products, cart, checkout)
 ├── frontend/                   React (Vite) + nginx reverse proxy
+│   └── public/images/          Product images
 ├── db/init.sql                 Schema + seed (10 products, stock 20000)
 ├── k6/                         In-cluster k6 TestRun manifests
 ├── k8s/

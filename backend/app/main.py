@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from app.auth import hash_password
 from app.database import SessionLocal, engine
 from app.models import Base, Product, User
-from app.routers import admin, auth, cart, products
+from app.routers import addresses, admin, auth, cart, checkout, payment_methods, products
 
 DEFAULT_PRODUCTS = [
     {
@@ -149,6 +149,9 @@ app.include_router(auth.router)
 app.include_router(admin.router)
 app.include_router(products.router)
 app.include_router(cart.router)
+app.include_router(addresses.router)
+app.include_router(payment_methods.router)
+app.include_router(checkout.router)
 
 
 @app.get("/health")

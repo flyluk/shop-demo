@@ -1,5 +1,14 @@
 import api from "./client";
-import type { Cart, Product, User } from "../types";
+import type {
+  Address,
+  AddressInput,
+  Cart,
+  Order,
+  PaymentMethod,
+  PaymentMethodInput,
+  Product,
+  User,
+} from "../types";
 
 export async function login(email: string, password: string): Promise<string> {
   const { data } = await api.post<{ access_token: string }>("/auth/login", { email, password });
@@ -58,4 +67,60 @@ export async function createUser(
 
 export async function deleteUser(userId: number): Promise<void> {
   await api.delete(`/admin/users/${userId}`);
+}
+
+export async function listAddresses(): Promise<Address[]> {
+  const { data } = await api.get<Address[]>("/addresses");
+  return data;
+}
+
+export async function getAddress(addressId: number): Promise<Address> {
+  const { data } = await api.get<Address>(`/addresses/${addressId}`);
+  return data;
+}
+
+export async function createAddress(payload: AddressInput): Promise<Address> {
+  const { data } = await api.post<Address>("/addresses", payload);
+  return data;
+}
+
+export async function updateAddress(addressId: number, payload: AddressInput): Promise<Address> {
+  const { data } = await api.put<Address>(`/addresses/${addressId}`, payload);
+  return data;
+}
+
+export async function setPreferredAddress(addressId: number): Promise<Address> {
+  const { data } = await api.post<Address>(`/addresses/${addressId}/preferred`);
+  return data;
+}
+
+export async function deleteAddress(addressId: number): Promise<void> {
+  await api.delete(`/addresses/${addressId}`);
+}
+
+export async function listPaymentMethods(): Promise<PaymentMethod[]> {
+  const { data } = await api.get<PaymentMethod[]>("/payment-methods");
+  return data;
+}
+
+export async function createPaymentMethod(payload: PaymentMethodInput): Promise<PaymentMethod> {
+  const { data } = await api.post<PaymentMethod>("/payment-methods", payload);
+  return data;
+}
+
+export async function setPreferredPaymentMethod(methodId: number): Promise<PaymentMethod> {
+  const { data } = await api.post<PaymentMethod>(`/payment-methods/${methodId}/preferred`);
+  return data;
+}
+
+export async function deletePaymentMethod(methodId: number): Promise<void> {
+  await api.delete(`/payment-methods/${methodId}`);
+}
+
+export async function checkout(addressId: number, paymentMethodId: number): Promise<Order> {
+  const { data } = await api.post<Order>("/checkout", {
+    address_id: addressId,
+    payment_method_id: paymentMethodId,
+  });
+  return data;
 }

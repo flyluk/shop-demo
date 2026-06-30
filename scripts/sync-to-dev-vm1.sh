@@ -8,12 +8,17 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOCAL_PATH="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
 DIRS=(backend frontend db k8s k6 scripts)
+RSYNC_EXCLUDES=(--exclude node_modules --exclude dist --exclude __pycache__)
 FILES=(docker-compose.yml README.md .gitignore .gitattributes)
 
 echo "Pushing ${LOCAL_PATH} -> ${REMOTE_HOST}:${REMOTE_PATH}"
 
 for dir in "${DIRS[@]}"; do
-  scp -r "${LOCAL_PATH}/${dir}" "${REMOTE_HOST}:${REMOTE_PATH}/"
+  if command -v rsync >/dev/null 2>&1; then
+    rsync -az --delete "${RSYNC_EXCLUDES[@]}" "${LOCAL_PATH}/${dir}/" "${REMOTE_HOST}:${REMOTE_PATH}/${dir}/"
+  else
+    scp -r "${LOCAL_PATH}/${dir}" "${REMOTE_HOST}:${REMOTE_PATH}/"
+  fi
 done
 
 for file in "${FILES[@]}"; do
