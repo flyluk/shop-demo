@@ -26,16 +26,16 @@ CREATE TABLE IF NOT EXISTS cart_items (
 INSERT INTO products (name, description, price, image_url, stock)
 SELECT v.name, v.description, v.price, v.image_url, v.stock
 FROM (VALUES
-    ('Wireless Mouse', 'Ergonomic wireless mouse with USB receiver', 29.99, '/images/mouse.jpg', 20000),
-    ('Mechanical Keyboard', 'RGB mechanical keyboard with Cherry MX switches', 89.99, '/images/keyboard.jpg', 20000),
-    ('USB-C Hub', '7-in-1 USB-C hub with HDMI and SD card reader', 49.99, '/images/hub.jpg', 20000),
-    ('Monitor Stand', 'Adjustable aluminum monitor stand', 39.99, '/images/stand.jpg', 20000),
-    ('Webcam HD', '1080p webcam with built-in microphone', 59.99, '/images/webcam.jpg', 20000),
-    ('Desk Lamp', 'LED desk lamp with adjustable brightness', 34.99, '/images/lamp.jpg', 20000),
-    ('Laptop Sleeve', '13-inch neoprene laptop sleeve', 24.99, '/images/sleeve.jpg', 20000),
-    ('Bluetooth Speaker', 'Portable waterproof Bluetooth speaker', 44.99, '/images/speaker.jpg', 20000),
-    ('Phone Stand', 'Adjustable phone and tablet stand', 14.99, '/images/phone-stand.jpg', 20000),
-    ('Cable Organizer', 'Set of 10 reusable cable ties', 9.99, '/images/cables.jpg', 20000)
+    ('Wireless Mouse', 'Ergonomic wireless mouse with USB receiver', 29.99, '/images/mouse.svg', 20000),
+    ('Mechanical Keyboard', 'RGB mechanical keyboard with Cherry MX switches', 89.99, '/images/keyboard.svg', 20000),
+    ('USB-C Hub', '7-in-1 USB-C hub with HDMI and SD card reader', 49.99, '/images/hub.svg', 20000),
+    ('Monitor Stand', 'Adjustable aluminum monitor stand', 39.99, '/images/stand.svg', 20000),
+    ('Webcam HD', '1080p webcam with built-in microphone', 59.99, '/images/webcam.svg', 20000),
+    ('Desk Lamp', 'LED desk lamp with adjustable brightness', 34.99, '/images/lamp.svg', 20000),
+    ('Laptop Sleeve', '13-inch neoprene laptop sleeve', 24.99, '/images/sleeve.svg', 20000),
+    ('Bluetooth Speaker', 'Portable waterproof Bluetooth speaker', 44.99, '/images/speaker.svg', 20000),
+    ('Phone Stand', 'Adjustable phone and tablet stand', 14.99, '/images/phone-stand.svg', 20000),
+    ('Cable Organizer', 'Set of 10 reusable cable ties', 9.99, '/images/cables.svg', 20000)
 ) AS v(name, description, price, image_url, stock)
 WHERE NOT EXISTS (SELECT 1 FROM products LIMIT 1);
 

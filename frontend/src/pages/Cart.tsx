@@ -44,9 +44,23 @@ export default function CartPage() {
           <ul className="cart-list">
             {cart.items.map((item) => (
               <li key={item.id} className="cart-item">
-                <div>
+                {item.product.image_url ? (
+                  <img
+                    className="cart-item-image"
+                    src={item.product.image_url}
+                    alt={item.product.name}
+                  />
+                ) : (
+                  <div className="cart-item-image cart-item-image-placeholder" aria-hidden>
+                    {item.product.name.charAt(0)}
+                  </div>
+                )}
+                <div className="cart-item-details">
                   <strong>{item.product.name}</strong>
                   <p>${item.product.price.toFixed(2)} each</p>
+                  <p className="cart-item-subtotal">
+                    ${(item.product.price * item.quantity).toFixed(2)} total
+                  </p>
                 </div>
                 <div className="cart-actions">
                   <input

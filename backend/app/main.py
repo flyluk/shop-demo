@@ -15,70 +15,70 @@ DEFAULT_PRODUCTS = [
         "name": "Wireless Mouse",
         "description": "Ergonomic wireless mouse with USB receiver",
         "price": 29.99,
-        "image_url": "/images/mouse.jpg",
+        "image_url": "/images/mouse.svg",
         "stock": 20000,
     },
     {
         "name": "Mechanical Keyboard",
         "description": "RGB mechanical keyboard with Cherry MX switches",
         "price": 89.99,
-        "image_url": "/images/keyboard.jpg",
+        "image_url": "/images/keyboard.svg",
         "stock": 20000,
     },
     {
         "name": "USB-C Hub",
         "description": "7-in-1 USB-C hub with HDMI and SD card reader",
         "price": 49.99,
-        "image_url": "/images/hub.jpg",
+        "image_url": "/images/hub.svg",
         "stock": 20000,
     },
     {
         "name": "Monitor Stand",
         "description": "Adjustable aluminum monitor stand",
         "price": 39.99,
-        "image_url": "/images/stand.jpg",
+        "image_url": "/images/stand.svg",
         "stock": 20000,
     },
     {
         "name": "Webcam HD",
         "description": "1080p webcam with built-in microphone",
         "price": 59.99,
-        "image_url": "/images/webcam.jpg",
+        "image_url": "/images/webcam.svg",
         "stock": 20000,
     },
     {
         "name": "Desk Lamp",
         "description": "LED desk lamp with adjustable brightness",
         "price": 34.99,
-        "image_url": "/images/lamp.jpg",
+        "image_url": "/images/lamp.svg",
         "stock": 20000,
     },
     {
         "name": "Laptop Sleeve",
         "description": "13-inch neoprene laptop sleeve",
         "price": 24.99,
-        "image_url": "/images/sleeve.jpg",
+        "image_url": "/images/sleeve.svg",
         "stock": 20000,
     },
     {
         "name": "Bluetooth Speaker",
         "description": "Portable waterproof Bluetooth speaker",
         "price": 44.99,
-        "image_url": "/images/speaker.jpg",
+        "image_url": "/images/speaker.svg",
         "stock": 20000,
     },
     {
         "name": "Phone Stand",
         "description": "Adjustable phone and tablet stand",
         "price": 14.99,
-        "image_url": "/images/phone-stand.jpg",
+        "image_url": "/images/phone-stand.svg",
         "stock": 20000,
     },
     {
         "name": "Cable Organizer",
         "description": "Set of 10 reusable cable ties",
         "price": 9.99,
-        "image_url": "/images/cables.jpg",
+        "image_url": "/images/cables.svg",
         "stock": 20000,
     },
 ]
@@ -91,6 +91,12 @@ def migrate_schema():
         )
         conn.execute(
             text("CREATE INDEX IF NOT EXISTS idx_cart_items_user_id ON cart_items(user_id)")
+        )
+        conn.execute(
+            text(
+                "UPDATE products SET image_url = REPLACE(image_url, '.jpg', '.svg') "
+                "WHERE image_url LIKE '%.jpg'"
+            )
         )
         conn.commit()
 
